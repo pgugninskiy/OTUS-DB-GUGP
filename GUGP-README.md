@@ -7,7 +7,112 @@
 
 
 
-![ERD Бронирование столиков (1)](https://user-images.githubusercontent.com/52799699/222922755-4b3bdbc2-61bd-48b5-8ac3-47c3e143d16b.png)
+@startuml
+
+skinparam linetype ortho
+
+package "Partners" <<Folder>> {
+entity Partner {
+  * Organization
+  * City
+  * INN
+  * KPP
+  * LegalAddress
+  * OKVED
+  * Status (sign of activation)
+  * TypeBusiness
+  * Turnover
+  * Large : boolean
+  * Tariff
+}
+
+entity Restaurant {
+   * Name
+   * Address
+   * ConditionRestaurant
+}
+entity Table {
+   * Restaurant
+   * Number
+   * NumberSeats
+   * Reservation
+}
+entity Tariff {
+   * Name
+   * Commission
+   * Turnover
+}
+}
+package "Users" <<Folder>> {
+entity User {
+   * Name
+   * Mail
+   * Telephone
+   * Password
+}
+entity Reservation {
+   * User
+   * Restaurant
+   * Date
+   * NumberGuests
+   * Status
+}
+}
+package "Platform" <<Folder>> {
+entity Employee {
+   * Name
+   * Mail
+   * Login
+   * Password
+}
+}
+package References <<Rectangle>> {
+enum "Partner Status" {
+   * Created
+   * Activated
+   * Locked
+   * Removed
+
+}
+enum "Booking Status" {
+   * Created
+   * Confirmed
+   * NotConfirmed
+   * Cancel
+
+}
+enum "Restaurant status" {
+   * Available
+   * NotAvailable
+}
+enum "Tariff name" {
+   * General
+   * Individual
+}
+enum "Type of business" {
+   * Restaurant
+   * DiningRoom
+   * Net
+}
+}
+
+  Partner "*" --> "1"  Restaurant 
+  Partner "*" --> "1" "Partner Status"
+  Partner "*" <-- "1" Employee
+  Partner "*" --> "1" Tariff
+  
+  User  "1" <-- "*" Reservation 
+  
+  Restaurant "*" --> "1" "Restaurant status"
+  Restaurant "1" <-- "*" Reservation 
+  Restaurant "*" --> "1" "Type of business"
+  
+  Table  "*" --> "*" Restaurant
+  
+  Reservation  "*" --> "1" "Booking Status"
+  
+  Tariff  "*" --> "1" "Tariff name"
+@enduml
 
 
 # 2. Примеры бизнес задач
